@@ -5,28 +5,24 @@
    Integrations:
    SD Card, 9DOF IMU, Temperature, Humidity,
    GPS, Geiger Counter Logging, Altitude Control,
-   Comprehensive Sanity System, Anemometer
+   Comprehensive Sanity System
 
 */
 //======================================
 // Libraries ===========================
 #include <Wire.h>               //Temp/Humidity/IMU/OLED
-#include <SPI.h>                //SD
+#include <SPI.h>                //SD/ATM
 #include <SD.h>                 //SD
 #include <TinyGPS++.h>          //GPS
 #include <Adafruit_SSD1306.h>   //OLED
-#include <Adafruit_HTU21DF.h>   //Temp/Humidity
-#include <Adafruit_Sensor.h>    //IMU
-#include <Adafruit_BNO055.h>
-#include <Adafruit_MPL3115A2.h>  //barometer
-//#include <Adafruit_SI1145.h> //UV
-//#include <Adafruit_LSM303_U.h>  //IMU
-//#include <Adafruit_L3GD20_U.h>  //IMU
-//#include <Adafruit_9DOF.h>      //IMU
+#include <Adafruit_Sensor.h>    //IMU/ATM
+#include <Adafruit_BNO055.h>    //IMU
+#include <Adafruit_BMP3XX.h>    //ATM
 #include <IridiumSBD.h>         //ROCKBLOCK
 #include <SoftwareSerial.h>     //ROCKBLOCK
 
 //=====================================
+
 //IMU =================================
 //Adafruit_9DOF                   dof   = Adafruit_9DOF();
 #define BNO055_SAMPLERATE_DELAY_MS (100)
@@ -35,15 +31,17 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 //UV =================================
 //Adafruit_SI1145 uv = Adafruit_SI1145();
 
-//pressure ============================
-Adafruit_MPL3115A2 baro = Adafruit_MPL3115A2();
+//ATM ============================
+#define SEALEVELPRESSURE_HPA (1018.3)
+Adafruit_BMP3XX bmp(53);
+
 
 //IMU variables =========================
 float eulerx;
 float eulery;
 float eulerz;
 
-//pressure variables ====================
+//ATM variables ====================
 float pascals;
 float altm;
 float tempC;
@@ -75,15 +73,6 @@ Adafruit_SSD1306 display(OLED_RESET);
 //SD Card ==================================
 #define chipSelect 53
 
-//Temp/Humidity ============================
-Adafruit_HTU21DF htu = Adafruit_HTU21DF();
-float temp;                 //farenehit
-float humidity;             //percentage
-
-//Anemometer ===============================
-#define ANEM A0
-float windspeed;            //mph
-
 //ROCKBLOCK ===============================
 #define SET 7
 #define UNSET 8
@@ -96,10 +85,6 @@ SoftwareSerial nss(12, 11); // RX, TX
 IridiumSBD isbd(nss, sleepPin);
 bool dataSent = true;
 int messagesReceived = 0;
-
-//Solar Panel ===============================
-#define SOLAR A7
-float voltage;
 
 //Sanity ===================================
 boolean sane = false;
@@ -144,11 +129,6 @@ void setup() {
       return;
    }
 
-  //solar panel
-  pinMode(SOLAR, INPUT);
-
-  pinMode(ANEM, INPUT);
-
   //Sanity
   pinMode(BUTTON, INPUT);
 
@@ -159,15 +139,6 @@ void loop() {
   if (dataSent) {
     sendRockBlockData(rbData());
   }
-}
-
-void anemometer() {
-  //Takes an analog input from 0.4V and 2V and maps it to 0m/s to 32m/s then to mph
-  windspeed = ((analogRead(ANEM) - 82) / 328.0 * 32.4) * 2.23694;
-}
-
-void solarPanel() {
-  voltage = analogRead(SOLAR) * (5.0 / 1023.0);
 }
 
 

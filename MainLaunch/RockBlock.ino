@@ -44,7 +44,6 @@ bool ISBDCallback()
     readIMU();
     readGPS();
     readATM();
-    solarPanel();
 
     if (alt > 18000) {
       initiateNichrome();

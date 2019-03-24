@@ -25,16 +25,12 @@ String mkdata(){
   String(speed,2) + "," + 
   String(numsats) + "," + 
   String(velDiff,3) + "," + 
-  //Temperature
-  String(temp,4) + "," +
-  String(humidity, 4) + "," +
-  //Windspeed
-//  String(windspeed, 4) + "," +
-  String(nichromeOn, 4) + "," +
-  //Pressure data
+  //ATM data
   String(pascals/101325.01, 2) + "," +
   String(altm, 2) + "," +
-  String(tempC, 2);
+  String(tempC, 2) + "," +
+  //Nichrome
+  String(nichromeOn, 4);
   
   return data;
 }

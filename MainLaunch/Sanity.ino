@@ -4,9 +4,8 @@ void sanity() {
   //Sanity Declarations ====================
   static boolean sd = false;
   static boolean imu = false;
-  static boolean temphum = false;
+  static boolean atm = false;
   static boolean gps_attached = false;
-  static boolean pressure = false;
 
   static boolean good_data = false;
 
@@ -18,14 +17,18 @@ void sanity() {
       sd = true;
     }
   }
+  
   if (!imu) {
     if (initSensors()) {
       imu = true;
     }
   }
   
-  if(!temphum){ if (htu.begin()) { temphum = true; } }
-  if(!pressure) { if (baro.begin()) { pressure = true; } }
+  if (!atm) {
+    if (initATM()) {
+      atm = true;
+    }
+  }
 
   //GPS
   if (!gps_attached) {
@@ -40,9 +43,9 @@ void sanity() {
   if (imu) {
     readIMU();
   }
-  if(pressure){ readATM(); }
-  if(temphum) { readHTU(); }
-  //  anemometer();
+  if (atm) {
+    readATM();
+  }
 
   //==========================================
   //Display Information ======================
@@ -58,12 +61,7 @@ void sanity() {
   } else {
     display.print("IMU+ ");
   }
-//  if (!temphum) {
-//    display.print("HTU- ");
-//  } else {
-//    display.print("HTU+ ");
-//  }
-  if (!pressure) {
+  if (!atm) {
     display.print("ATM- ");
   } else {
     display.print("ATM+ ");
@@ -71,27 +69,22 @@ void sanity() {
 
   if (gps_attached) {
     display.println("NS:" + String(numsats));
-    display.println("Wind: " + String(windspeed, 3));
     display.println("Lat: " + String(latit, 6));
     display.println("Long: " + String(longit, 6));
   } else {
     display.println("GPS-");
   }
-
+  if (atm) {
+    //ptint stuff
+    display.print(String(pascals, 2) + "hPa ");
+    display.print(String(tempC, 2) + "*C ");
+    display.print(String(altm, 2) + "m");
+    display.println();
+  }
   if (imu) {
     display.print(String(eulerx, 2) + ",");
     display.print(String(eulery, 2) + ",");
     display.println(String(eulerz, 2));
-  }
-
-  if (pressure) {
-    display.println(pascals / 101325.01);
-  }
-
-  if (temphum) {
-    display.print(String(temp) + "*F ");
-    display.print(String(humidity) + "%");
-    display.println();
   }
 
   int current = digitalRead(BUTTON);
@@ -102,19 +95,7 @@ void sanity() {
 
   //==========================================
   //Ending Sanity ============================
-  /*
-    if(sd && imu && gps_attached && pressure && temphum){
-    display.clearDisplay();
-    display.setCursor(0,0);
-    display.println("Button Pressed\nEnding Sanity\n\nHave a Great\nFlight!");
-    display.display();
-    sane = true;
-    delay(3000);
-    display.clearDisplay();
-    }
-  */
-
-  if (sd && imu && gps_attached && pressure && digitalRead(BUTTON)) {
+  if (sd && imu && gps_attached && atm && digitalRead(BUTTON)) {
     display.clearDisplay();
     display.setCursor(0, 0);
     display.println("Button Pressed\nEnding Sanity\n\nHave a Great\nFlight!");
@@ -123,9 +104,6 @@ void sanity() {
     delay(3000);
     display.clearDisplay();
   }
-
-
-
 
   display.display();
 
