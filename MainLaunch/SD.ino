@@ -40,7 +40,7 @@ String rbData(){
   //GPS
   String(latit,6) + "," + 
   String(longit,6) + "," + 
-  String(alt,3) + "," + 
+  String(altm,3) + "," + 
   String(course,2) + "," + 
   String(speed,2) + "," + 
   String(messagesReceived,2);
