@@ -32,8 +32,12 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 //Adafruit_SI1145 uv = Adafruit_SI1145();
 
 //ATM ============================
-#define SEALEVELPRESSURE_HPA (1018.3)
-Adafruit_BMP3XX bmp(53);
+#define SEALEVELPRESSURE_HPA (1017.5)
+#define BMP_SCK 40
+#define BMP_MISO 41
+#define BMP_MOSI 42
+#define BMP_CS 43
+Adafruit_BMP3XX bmp(BMP_CS, BMP_MOSI, BMP_MISO,  BMP_SCK);
 
 
 //IMU variables =========================
