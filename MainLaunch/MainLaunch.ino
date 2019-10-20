@@ -21,13 +21,12 @@
 
 //=====================================
 //ATM =================================
-#define SEALEVELPRESSURE_HPA (1017.5)
-//#define BME_SCK 40
-//#define BME_MISO 41
-//#define BME_MOSI 42
-//#define BME_CS 43
-//Adafruit_BME680 bme(BME_CS, BME_MOSI, BME_MISO,  BME_SCK);
-Adafruit_BME680 bme(53); // Hardware SPI
+#define SEALEVELPRESSURE_HPA (1013.2)
+#define BME_SCK 40
+#define BME_MISO 41
+#define BME_MOSI 42
+#define BME_CS 43
+Adafruit_BME680 bme(BME_CS, BME_MOSI, BME_MISO,  BME_SCK);
 
 //ATM variables =======================
 float pascals;
