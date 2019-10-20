@@ -3,57 +3,38 @@
    High Altitude Balloon Project
 
    Integrations:
-   SD Card, 9DOF IMU, Temperature, Humidity,
-   GPS, Geiger Counter Logging, Altitude Control,
-   Comprehensive Sanity System
+   SD Card, temperature, humidity, barometric 
+   pressure and VOC gas, Comprehensive Sanity System
 
 */
 //======================================
 // Libraries ===========================
-#include <Wire.h>               //Temp/Humidity/IMU/OLED
+#include <Wire.h>               //OLED
 #include <SPI.h>                //SD/ATM
 #include <SD.h>                 //SD
 #include <TinyGPS++.h>          //GPS
 #include <Adafruit_SSD1306.h>   //OLED
-#include <Adafruit_Sensor.h>    //IMU/ATM
-#include <Adafruit_BNO055.h>    //IMU
-#include <Adafruit_BMP3XX.h>    //ATM
+#include <Adafruit_Sensor.h>    //ATM
+#include <Adafruit_BME680.h>    //ATM
 #include <IridiumSBD.h>         //ROCKBLOCK
 #include <SoftwareSerial.h>     //ROCKBLOCK
 
 //=====================================
-
-//IMU =================================
-//Adafruit_9DOF                   dof   = Adafruit_9DOF();
-#define BNO055_SAMPLERATE_DELAY_MS (100)
-Adafruit_BNO055 bno = Adafruit_BNO055();
-
-//UV =================================
-//Adafruit_SI1145 uv = Adafruit_SI1145();
-
-//ATM ============================
+//ATM =================================
 #define SEALEVELPRESSURE_HPA (1017.5)
-#define BMP_SCK 40
-#define BMP_MISO 41
-#define BMP_MOSI 42
-#define BMP_CS 43
-Adafruit_BMP3XX bmp(BMP_CS, BMP_MOSI, BMP_MISO,  BMP_SCK);
+//#define BME_SCK 40
+//#define BME_MISO 41
+//#define BME_MOSI 42
+//#define BME_CS 43
+//Adafruit_BME680 bme(BME_CS, BME_MOSI, BME_MISO,  BME_SCK);
+Adafruit_BME680 bme(53); // Hardware SPI
 
-
-//IMU variables =========================
-float eulerx;
-float eulery;
-float eulerz;
-
-//ATM variables ====================
+//ATM variables =======================
 float pascals;
 float altm;
+float humidity;
+float gas;
 float tempC;
-
-//UV variables ==========================
-
-float infrared;
-float ultraviolet;
 
 //=======================================
 // GPS Variables ========================
@@ -78,10 +59,6 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define chipSelect 53
 
 //ROCKBLOCK ===============================
-#define SET 7
-#define UNSET 8
-long nichromeTimer;
-bool nichromeOn = false;
 int sleepPin = 3;
 uint8_t buffer[270];
 size_t bufferSize = 0;
@@ -93,6 +70,7 @@ int messagesReceived = 0;
 //Sanity ===================================
 boolean sane = false;
 #define BUTTON 5
+
 //==========================================
 
 void setup() {
@@ -118,12 +96,6 @@ void setup() {
   digitalWrite(sleepPin, LOW);
   isbd.begin();
   Serial.println("Step 3 done");
-  //set/unset
-  pinMode(SET, OUTPUT);
-  digitalWrite(SET, LOW);
-  pinMode(UNSET, OUTPUT);
-  digitalWrite(UNSET, LOW);
-
 
   //take a look at the code below for reference of checking signal quality
   int err = isbd.getSignalQuality(signalQuality);

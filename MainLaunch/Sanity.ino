@@ -3,7 +3,6 @@ void sanity() {
   //========================================
   //Sanity Declarations ====================
   static boolean sd = false;
-  static boolean imu = false;
   static boolean atm = false;
   static boolean gps_attached = false;
 
@@ -15,12 +14,6 @@ void sanity() {
   if (!sd) {
     if (SD.begin(chipSelect)) {
       sd = true;
-    }
-  }
-  
-  if (!imu) {
-    if (initSensors()) {
-      imu = true;
     }
   }
   
@@ -40,9 +33,6 @@ void sanity() {
   if (gps_attached) {
     readGPS();
   }
-  if (imu) {
-    readIMU();
-  }
   if (atm) {
     readATM();
   }
@@ -55,11 +45,6 @@ void sanity() {
     display.print("SD- ");
   } else {
     display.print("SD+ ");
-  }
-  if (!imu) {
-    display.print("IMU- ");
-  } else {
-    display.print("IMU+ ");
   }
   if (!atm) {
     display.print("ATM- ");
@@ -81,11 +66,6 @@ void sanity() {
     display.print(String(altm, 2) + "m");
     display.println();
   }
-  if (imu) {
-    display.print(String(eulerx, 2) + ",");
-    display.print(String(eulery, 2) + ",");
-    display.println(String(eulerz, 2));
-  }
 
   int current = digitalRead(BUTTON);
   display.println(current);
@@ -95,7 +75,7 @@ void sanity() {
 
   //==========================================
   //Ending Sanity ============================
-  if (sd && imu && gps_attached && atm && digitalRead(BUTTON)) {
+  if (sd && gps_attached && atm && digitalRead(BUTTON)) {
     display.clearDisplay();
     display.setCursor(0, 0);
     display.println("Button Pressed\nEnding Sanity\n\nHave a Great\nFlight!");

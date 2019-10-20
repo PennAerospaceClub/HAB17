@@ -28,15 +28,4 @@ static void smartDelay(unsigned long ms){
   while (millis() - start < ms);
 }
 
-/*
-static void feedGPS(unsigned long ms){
-  unsigned long start = millis();
-  while((millis() - start < ms) && (!gps.altitude.isUpdated())){
-    if(Serial1.available()){
-      gps.encode(Serial1.read());
-    }
-  }
-}
-*/
-
 
