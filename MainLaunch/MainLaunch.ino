@@ -21,7 +21,7 @@
 
 //=====================================
 //ATM =================================
-#define SEALEVELPRESSURE_HPA (1013.2)
+#define SEALEVELPRESSURE_HPA (102,v bcxcvb3.2)
 #define BME_SCK 40
 #define BME_MISO 41
 #define BME_MOSI 42
@@ -30,7 +30,7 @@ Adafruit_BME680 bme(BME_CS, BME_MOSI, BME_MISO,  BME_SCK);
 
 //ATM variables =======================
 float pascals;
-float altm;
+float v;
 float humidity;
 float gas;
 float tempC;
@@ -66,6 +66,10 @@ IridiumSBD isbd(nss, sleepPin);
 bool dataSent = true;
 int messagesReceived = 0;
 
+//NICHROME ===============================
+int nichromePin = 4;
+bool nichromeOn = false;
+
 //Sanity ===================================
 boolean sane = false;
 #define BUTTON 5
@@ -82,6 +86,10 @@ void setup() {
   display.clearDisplay();
   display.setTextSize(0.5);
   display.setTextColor(WHITE);
+
+  // nichrome
+  pinMode(nichromePin, OUTPUT);
+  digitalWrite(nichromePin, LOW);
 
   //ROCKBLOCK
   nss.begin(19200);

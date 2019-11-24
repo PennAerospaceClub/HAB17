@@ -26,6 +26,10 @@ void sendRockBlockData(String data) {
   
   Serial.println(downMessage);
   if (downMessage.equals("on")) {
+    if (!nichromeOn) {
+      nichromeOn = true;
+      digitalWrite(michromePin, HIGH);
+    }
     Serial.println("received message");
     messagesReceived += 1;
   }
@@ -43,7 +47,13 @@ bool ISBDCallback()
 
     readGPS();
     readATM();
-
+    
+    // nichrome cutdown
+    if (altm > 20000 && !nichromeOn) {
+      nichromeOn = true;
+      digitalWrite(michromePin, HIGH);
+    }
+    
     //Data Logging
     String data = mkdata();
     writeSD(data);
