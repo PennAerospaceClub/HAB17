@@ -5,6 +5,7 @@ void sanity() {
   static boolean sd = false;
   static boolean atm = false;
   static boolean gps_attached = false;
+  static int rb_signal = 0;
 
   static boolean good_data = false;
 
@@ -27,6 +28,9 @@ void sanity() {
   if (!gps_attached) {
     gps_attached = true;
   }
+
+  //ROCKBLOCK
+  rb_signal = isbd.getSignalQuality();
 
   //========================================
   //Data Verification ======================
@@ -51,6 +55,8 @@ void sanity() {
   } else {
     display.print("ATM+ ");
   }
+
+  display.println("RB: " + String(rb_signal));
 
   if (gps_attached) {
     display.println("NS:" + String(numsats));
