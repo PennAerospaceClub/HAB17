@@ -28,7 +28,7 @@ void sendRockBlockData(String data) {
   if (downMessage.equals("on")) {
     if (!nichromeOn) {
       nichromeOn = true;
-      digitalWrite(michromePin, HIGH);
+      digitalWrite(nichromePin, HIGH);
     }
     Serial.println("received message");
     messagesReceived += 1;
@@ -51,7 +51,7 @@ bool ISBDCallback()
     // nichrome cutdown
     if (altm > 20000 && !nichromeOn) {
       nichromeOn = true;
-      digitalWrite(michromePin, HIGH);
+      digitalWrite(nichromePin, HIGH);
     }
     
     //Data Logging
