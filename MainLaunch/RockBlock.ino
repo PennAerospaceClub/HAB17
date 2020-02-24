@@ -47,6 +47,7 @@ bool ISBDCallback()
 
     readGPS();
     readATM();
+    readLux();
     
     // nichrome cutdown
     if (altm > 20000 && !nichromeOn) {

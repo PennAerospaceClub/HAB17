@@ -27,6 +27,10 @@ String mkdata(){
   String(gas, 2) + "," +
   String(altm, 2) + "," +
   String(tempC, 2) + "," +
+  //LUX data
+  String(lum, 4) + "," +
+  String(ir, 4) + "," +
+  String(lux, 4) + "," +
   // RockBlock
   String(nichromeOn, 1);
   
