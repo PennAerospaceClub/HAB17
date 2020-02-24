@@ -5,6 +5,7 @@ void sanity() {
   static boolean sd = false;
   static boolean atm = false;
   static boolean gps_attached = false;
+  static boolean lux_attached = false;
   static int rb_signal = 0;
 
   static boolean good_data = false;
@@ -15,6 +16,12 @@ void sanity() {
   if (!sd) {
     if (SD.begin(chipSelect)) {
       sd = true;
+    }
+  }
+
+  if (!lux_attached) {
+    if (initLux()) {
+      lux_attached = true;
     }
   }
   
@@ -30,7 +37,7 @@ void sanity() {
   }
 
   //ROCKBLOCK
-  rb_signal = isbd.getSignalQuality();
+//  rb_signal = isbd.getSignalQuality();
 
   //========================================
   //Data Verification ======================
@@ -39,6 +46,10 @@ void sanity() {
   }
   if (atm) {
     readATM();
+  }
+
+  if(lux_attached) {
+    readLux();
   }
 
   //==========================================
@@ -56,7 +67,12 @@ void sanity() {
     display.print("ATM+ ");
   }
 
-  display.println("RB: " + String(rb_signal));
+  if (!lux_attached) {
+    display.print("LUX- ");
+  } else {
+    display.print("LUX+ ");
+  }
+  //display.println("RB: " + String(rb_signal));
 
   if (gps_attached) {
     display.println("NS:" + String(numsats));
@@ -69,12 +85,15 @@ void sanity() {
     //ptint stuff
     display.print(String(pascals, 2) + "hPa ");
     display.print(String(tempC, 2) + "*C ");
-    display.print(String(altm, 2) + "m");
     display.println();
+    display.println(String(altm, 2) + "m");
   }
 
-  int current = digitalRead(BUTTON);
-  display.println(current);
+  //int current = digitalRead(BUTTON);
+  //display.println(current);
+  if (lux_attached) {
+    display.println(String(lux, 4));
+  }
 
   String data = mkdata();
   Serial.println(data);

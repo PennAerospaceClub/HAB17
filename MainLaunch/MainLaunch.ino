@@ -9,13 +9,14 @@
 */
 //======================================
 // Libraries ===========================
-#include <Wire.h>               //OLED
+#include <Wire.h>               //OLED/LUX
 #include <SPI.h>                //SD/ATM
 #include <SD.h>                 //SD
 #include <TinyGPS++.h>          //GPS
 #include <Adafruit_SSD1306.h>   //OLED
-#include <Adafruit_Sensor.h>    //ATM
+#include <Adafruit_Sensor.h>    //ATM/LUX
 #include <Adafruit_BME680.h>    //ATM
+#include "Adafruit_TSL2591.h"   //LUX
 #include <IridiumSBD.h>         //ROCKBLOCK
 #include <SoftwareSerial.h>     //ROCKBLOCK
 
@@ -34,6 +35,16 @@ float altm;
 float humidity;
 float gas;
 float tempC;
+
+//=====================================
+//LUX =================================
+Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
+
+//LUX variables =======================
+uint32_t lum;
+int16_t ir, full;
+float lux;
+
 
 //=======================================
 // GPS Variables ========================
