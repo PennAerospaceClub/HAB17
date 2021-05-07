@@ -32,7 +32,7 @@ String mkdata(){
   String(ir, 4) + "," +
   String(lux, 4) + "," +
   // RockBlock
-  String(nichromeOn, 1);
+  String(nichromeOn);
   
   return data;
 }
@@ -44,7 +44,7 @@ String rbData(){
   String(altm, 6) + "," +  
   String(speed, 2) + "," +
   String(tempC, 2) + "," +
-  String(nichromeOn, 1);
+  String(nichromeOn);
   
   return data;
 }
